@@ -2,6 +2,7 @@
 #include <glfw3.h>
 #include <iostream>
 #include "src/shader.hpp"
+#include "src/stb_image.h"
 
 using namespace std;
 
@@ -88,10 +89,11 @@ int main() {
                   "../shader/fragment.glsl");
 
     float vertices[] = {
-            0.5f, 0.5f, 0.0f,  // top right
-            0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f, 0.5f, 0.0f   // top left
+            // positions      // colors         // texture coords
+            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+            -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
     };
     unsigned int indices[] = {  // note that we start from 0!
             0, 1, 3,  // first Triangle
@@ -111,8 +113,77 @@ int main() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    // position attr
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+
+    // color attr
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // texture attr
+    /* 从 VBO 中读取顶点数据
+     * GL_ARRAY_BUFFER
+     * 参数解析
+     * (1) position：shader 中的属性 position
+     * (2) size：顶点属性的数量 （1，2，3，4 中的一个）
+     * (6) offset：偏移量
+    */
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    // 加载并创建一个 texture
+    unsigned int texture1, texture2;
+
+    // texture1
+    // 第一个参数是生成纹理的数量
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    // 设置纹理环绕
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // 设置纹理过滤
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load("../res/demo.png", &width, &height, &nrChannels, 0);
+
+    if (data) {
+        cout << width << "x" << height << "\tchannels: " << nrChannels << endl;
+        glTexImage2D(GL_TEXTURE_2D, 0,
+                     GL_RGB, width, height, 0,
+                     GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        cout << "加载纹理失败" << endl;
+    }
+    stbi_image_free(data);
+
+    // texture2
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    data = stbi_load("../res/demo1.png", &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    // 在设置uniform变量之前要激活着色器程序
+    shader.use();
+    // 设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元
+    glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);    // 手动设置
+    shader.setInt("texture2", 1);   // 使用着色器类设置
+
+
 //    可以解绑 VBO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 // 不要解绑 EBO 因为 EBO 是被存储到了 VAO 中。
@@ -125,10 +196,12 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        float timeValue = glfwGetTime();
-        float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+
         shader.use();
-        glUniform4f(glGetUniformLocation(shader.ID, "ourColor"), 0.0f, greenValue, 0.0f, 1.0f);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
