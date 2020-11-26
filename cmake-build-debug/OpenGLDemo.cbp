@@ -95,6 +95,12 @@
 		<Unit filename="/Users/yunrui/CLionProjects/OpenGLDemo/src/shader.hpp">
 			<Option target="OpenGLDemo"/>
 		</Unit>
+		<Unit filename="/Users/yunrui/CLionProjects/OpenGLDemo/src/stb_image.cpp">
+			<Option target="OpenGLDemo"/>
+		</Unit>
+		<Unit filename="/Users/yunrui/CLionProjects/OpenGLDemo/src/stb_image.h">
+			<Option target="OpenGLDemo"/>
+		</Unit>
 		<Unit filename="/Users/yunrui/CLionProjects/OpenGLDemo/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

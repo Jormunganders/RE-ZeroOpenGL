@@ -1,5 +1,5 @@
 //
-// Created by qiaoyunrui on 2020/11/24.
+// Created by Juhezi on 2020/11/24.
 //
 
 #ifndef OPENGLDEMO_SHADER_HPP

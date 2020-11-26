@@ -17,7 +17,7 @@ set(GLFW_LINK /usr/local/Cellar/glfw/3.3.2/lib/libglfw.3.3.dylib)
 link_libraries(${OPENGL} ${GLEW_LINK} ${GLFW_LINK})
 
 #设置要编译的c/cpp文件到可执行文件中，该exe包含两个文件glad.c,main.cpp,生成SmartPointTest
-set(SOURCE_FILES "src/glad.c" "main.cpp" src/shader.hpp)
+set(SOURCE_FILES "src/glad.c" "main.cpp" src/shader.hpp src/stb_image.h src/stb_image.cpp)
 
 add_executable(OpenGLDemo ${SOURCE_FILES})
 

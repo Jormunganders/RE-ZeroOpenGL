@@ -18,6 +18,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   )
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/yunrui/CLionProjects/OpenGLDemo/main.cpp" "/Users/yunrui/CLionProjects/OpenGLDemo/cmake-build-debug/CMakeFiles/OpenGLDemo.dir/main.cpp.o"
+  "/Users/yunrui/CLionProjects/OpenGLDemo/src/stb_image.cpp" "/Users/yunrui/CLionProjects/OpenGLDemo/cmake-build-debug/CMakeFiles/OpenGLDemo.dir/src/stb_image.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
