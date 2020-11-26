@@ -3,63 +3,12 @@
 #include <iostream>
 #include "src/shader.hpp"
 #include "src/stb_image.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 using namespace std;
-
-/*void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
-    //如果按下ESC，把windowShouldClose设置为True，外面的循环会关闭应用
-    if(key==GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    std::cout<<"ESC"<<mode;
-}
-
-int main(void)
-{
-    //初始化GLFW库
-    if(!glfwInit())
-        return -1;
-    //创建窗口以及上下文
-    GLFWwindow* window = glfwCreateWindow(640, 480, "hello world", NULL, NULL);
-    if(!window)
-    {
-        //创建失败会返回NULL
-        glfwTerminate();
-    }
-    //建立当前窗口的上下文
-    glfwMakeContextCurrent(window);
-
-    glfwSetKeyCallback(window, key_callback); //注册回调函数
-    //循环，直到用户关闭窗口
-    while(!glfwWindowShouldClose(window))
-    {
-        *//*******轮询事件*******//*
-        glfwPollEvents();
-
-        *//*******渲染*******//*
-        //选择清空的颜色RGBA
-        glClearColor(0.2, 0.3, 0.3, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        //开始画一个三角形
-        glBegin(GL_TRIANGLES);
-        glColor3f(1, 0, 0); //Red
-        glVertex3f(0, 1, 1);
-
-        glColor3f(0, 1, 0); //Green
-        glVertex3f(-1, -1, 0);
-
-        glColor3f(0, 0, 1); //Blue
-        glVertex3f(1, -1, 0);
-        //结束一个画图步骤
-        glEnd();
-
-        *//******交换缓冲区，更新window上的内容******//*
-        glfwSwapBuffers(window);
-    }
-    glfwTerminate();
-    return 0;
-}*/
+using namespace glm;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -89,11 +38,11 @@ int main() {
                   "../shader/fragment.glsl");
 
     float vertices[] = {
-            // positions      // colors         // texture coords
-            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-            -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
+            // positions      // texture coords
+            0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right
+            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f  // top left
     };
     unsigned int indices[] = {  // note that we start from 0!
             0, 1, 3,  // first Triangle
@@ -114,12 +63,8 @@ int main() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // position attr
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-
-    // color attr
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
 
     // texture attr
     /* 从 VBO 中读取顶点数据
@@ -129,8 +74,8 @@ int main() {
      * (2) size：顶点属性的数量 （1，2，3，4 中的一个）
      * (6) offset：偏移量
     */
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // 加载并创建一个 texture
     unsigned int texture1, texture2;
@@ -183,7 +128,6 @@ int main() {
     glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);    // 手动设置
     shader.setInt("texture2", 1);   // 使用着色器类设置
 
-
 //    可以解绑 VBO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 // 不要解绑 EBO 因为 EBO 是被存储到了 VAO 中。
@@ -200,6 +144,20 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
+
+        // 0.99 版本以上需要设定初始值，然而现在是 0.98
+        mat4 trans;
+        // 逆时针旋转 90 度
+//        trans = rotate(trans, radians(90.0f), vec3(0.0, 0.0, 1.0));
+        // 缩放 0.5
+//        trans = scale(trans, vec3(1.5, 1.5, 1));
+
+//        trans = translate(trans, vec3(0.5f, -0.5f, 0.0f));
+        trans = scale(trans, vec3(sin(glfwGetTime()) * 2, sin(glfwGetTime()) * 2, 1));
+        trans = rotate(trans, (float) glfwGetTime(), vec3(0.0f, 0.0f, 1.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"),
+                           1, GL_FALSE, value_ptr(trans));
+
 
         shader.use();
         glBindVertexArray(VAO);
