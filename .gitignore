@@ -189,3 +189,4 @@ Temporary Items
 .apdisk
 cmake-build-debug/
 .idea/
+config.cmake
