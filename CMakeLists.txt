@@ -35,7 +35,7 @@ link_libraries(${OPENGL} ${GLEW_LINK} ${GLFW_LINK})
 add_subdirectory(glm)
 
 #设置要编译的c/cpp文件到可执行文件中，该exe包含两个文件glad.c,main.cpp
-set(SOURCE_FILES "src/glad.c" "main.cpp" src/shader.hpp src/stb_image.h src/stb_image.cpp)
+set(SOURCE_FILES "src/glad.c" "main.cpp" src/shader.hpp src/stb_image.h src/stb_image.cpp src/camera.h)
 
 add_executable(OpenGLDemo ${SOURCE_FILES})
 
