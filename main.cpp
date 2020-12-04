@@ -31,7 +31,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);   // 光源位置
+glm::vec3 lightPos(1.2f, 0.0f, 2.0f);   // 光源位置
 
 int main() {
     glfwInit();
@@ -39,7 +39,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_WIDTH, "OpenGLDemo", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGLDemo", nullptr, nullptr);
     if (window == nullptr) {
         cout << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -65,47 +65,47 @@ int main() {
                            "../shader/lighting_cube_fs.glsl");
 
     float vertices[] = {
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
 
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
 
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
 
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
 
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
 
-            -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
     };
 
     unsigned int VBO, cubeVAO;
@@ -119,14 +119,17 @@ int main() {
     glBindVertexArray(cubeVAO);
 
     // position attr
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     unsigned int lightCubeVAO;
     glGenVertexArrays(1, &lightCubeVAO);
     glBindVertexArray(lightCubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    // 只想使用每个顶点的前三个 float，并且忽略后三个 float，需要把步长改为 float 的 6 倍
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
     while (!glfwWindowShouldClose(window)) {
@@ -140,6 +143,8 @@ int main() {
         lightingShader.use();
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("lightColor", 0.5f, 0.5f, 1.0f);
+        lightingShader.setVec3("lightPos", lightPos);   // 放在循环外面也行，反正是个常量
+        lightingShader.setVec3("viewPos", camera.Position);
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f,
                                                 100.0f);
