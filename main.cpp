@@ -141,10 +141,15 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         lightingShader.use();
-        lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        lightingShader.setVec3("lightColor", 0.5f, 0.5f, 1.0f);
         lightingShader.setVec3("lightPos", lightPos);   // 放在循环外面也行，反正是个常量
         lightingShader.setVec3("viewPos", camera.Position);
+        lightingShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        lightingShader.setFloat("material.shininess", 32.0f);
+        lightingShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
+        lightingShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f); // 将光照调暗了一些以搭配场景
+        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f,
                                                 100.0f);
