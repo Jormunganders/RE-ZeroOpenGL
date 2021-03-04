@@ -17,6 +17,10 @@ endfunction(config_glew)
 
 set(CMAKE_CXX_STANDARD 14)
 
+SET(CMAKE_C_COMPILER "/usr/local/Cellar/gcc/10.2.0_4/bin/g++-10")
+
+SET(CMAKE_CXX_COMPILER "/usr/local/Cellar/gcc/10.2.0_4/bin/g++-10")
+
 include(config.cmake)
 
 config_glew(${IS_MACBOOK})
